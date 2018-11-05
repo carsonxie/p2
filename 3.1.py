@@ -25,29 +25,34 @@ def login():
         input_email = raw_input('Please enter your email. ')
         input_email = input_email.lower()
 
-        if '@' in input_email:
-            cursor.execute("select pwd from members where email=:input_email",
+        if '@' in input_email: 
+            cursor.execute("select * from members where email=:input_email", {"input_email":input_email})
+            result = cursor.fetchall()
+            if len(result) != 0:
+                cursor.execute("select pwd from members where email=:input_email",
                        {"input_email": input_email})
-            user_password = cursor.fetchone()
-            user_password = str(user_password[0])
-            connection.commit()
-
-            input_password = getpass.getpass(prompt='Please enter your password. ')
-        
-            if user_password == input_password:
-                print('Successfully login')
-        # and need to display all inbox unseen
-                cursor.execute("select * from inbox where email=:input_email and seen = 'n' ",
-                           {"input_email": input_email})
-                message = cursor.fetchall()
-                print('Your unread messages.')
-                print(message)
-        # update all unseen to seen
-                cursor.execute("update inbox set seen = 'y' ")
+                user_password = cursor.fetchone()
+                user_password = str(user_password[0])
                 connection.commit()
-                break
+
+                input_password = getpass.getpass(prompt='Please enter your password. ')
+        
+                if user_password == input_password:
+                    print('Successfully login')
+        # and need to display all inbox unseen
+                    cursor.execute("select * from inbox where email=:input_email and seen = 'n' ",
+                           {"input_email": input_email})
+                    message = cursor.fetchall()
+                    print('Your unread messages.')
+                    print(message)
+        # update all unseen to seen
+                    cursor.execute("update inbox set seen = 'y' ")
+                    connection.commit()
+                    break
+                else:
+                    print('Wrong pass, try again.')
             else:
-                print('Wrong pass, try again.')
+                print('Email you enter not exist.')
         else:
             print('Wrong email format, try again.')
             
