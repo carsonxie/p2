@@ -685,8 +685,11 @@ def LoginOrSignUp():
     user_email = None
     if decision == 'n':
         user_email = login()
+        MainMenu(user_email)
+        
     elif decision == 'y':
         user_email = SignUP()
+        MainMenu(user_email)
 
     elif decision == 'q':
         pass
@@ -715,6 +718,7 @@ def OfferRide(user_email):
 
     given_rdate = GetDate("Please enter date(YYYY-MM-DD)\n")
     given_rdate = given_rdate.date()
+    
     while True:
         try:
             given_seats = int(input("Please enter seats\n"))
@@ -746,21 +750,9 @@ def OfferRide(user_email):
 
     option = input("Do you want to add any set of enrouted locations?  Y/N\n")
 
-    if option.lower() == 'y':
-        while True:
-            try:
-                text_enroute = "Please enter keywords for enroute locations:\n"
-                enroutedlcode = selectionLocation(text_enroute)[0]
+  
 
-                break
-            except ValueError:
-                print("Invalid KeyWords")
-        connection.execute("INSERT INTO enroute(rno,lcode) VALUES(?,?)",(int(given_rno), str(enroutedlcode)))
-        connection.commit()
-    elif option.lower() == 'n':
-        pass
-
-    option2 = input("Do You Want to Add the Car Number Y/N")
+    
     if option2.lower() == 'y':
         while True:
             try:
@@ -777,6 +769,17 @@ def OfferRide(user_email):
     task = (given_rno, given_price, given_rdate, given_seats, given_lug_desc, srclcode, dstlcode, given_driver, given_cno)
     cursor.execute("INSERT INTO rides(rno,price,rdate,seats,lugDesc,src,dst,driver,cno) VALUES(?,?,?,?,?,?,?,?,?)",task)
     connection.commit()
+    option2 = input("Do You Want to Add the Car Number Y/N")
+    if option.lower() == 'y':
+        text_enroute = "Please enter keywords for enroute locations:\n"
+        enroutedlcode = selectionLocation(text_enroute)[0]
+       
+        enroute_task = (int(given_rno),str(enroutedlcode))
+        connection.execute('INSERT INTO enroute VALUES(?, ?)',enroute_task)
+        connection.commit()                
+                
+    elif option.lower() == 'n':
+        pass    
     MainMenu(user_email)
 
 
@@ -975,25 +978,25 @@ def MainMenu(user_email):
     elif operation == '4':
         PostRideRequests(user_email)
     elif operation == '5':
-       SearchAndDeleteRideRequests(user_email)
+        SearchAndDeleteRideRequests(user_email)
     elif operation == 'QUIT':
-        sys.exit()
+        ExitProgram()
     else:
         print("Invalid Code")
 
 def ExitProgram():
     while True:
-        try:
-            option = int(input("Enter 1 if You Want To Exit Program\n Enter 2 if You Want To Logout "))
+        option = int(input("Enter 1 if You Want To Exit Program\n Enter 2 if You Want To Logout "))
+        if option in [1,2]:
             if option == 1:
-                sys.exit()
+                sys.exit(0)
             elif option == 2:
                 user_email = None
-            else:
-                print("Invalid Code, Please try again")
-                continue
-        except ValueError:
+                LoginOrSignUp()
+                break
+        else:
             print("Invalid Code, Please Try Again")
+            continue
 
 
 
@@ -1001,9 +1004,9 @@ def main():
         global connection,cursor
         path = "./project1.db"
         connect(path)
-        user_email= LoginOrSignUp()
-        MainMenu(user_email)
-
+        LoginOrSignUp()
+        
+        
 
 
         connection.commit()
