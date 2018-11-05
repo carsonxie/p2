@@ -19,7 +19,7 @@ def connect(path):
 #########################################################################################################################################
 def login():
     global connection, cursor
-    input_email = input('Please enter your email. ')
+    input_email = raw_input('Please enter your email. ')
     input_email = input_email.lower()
     input_password = getpass.getpass(prompt='Please enter your password. ')
     # prevent injections using regular expression
@@ -61,7 +61,7 @@ def SignUP():
 
     while True:
 
-        signup_email = str(input('Enter a email address to create a new account.')).lower()
+        signup_email = str(raw_input('Enter a email address to create a new account.')).lower()
 
             # and need to comma at the end
         signup_email = signup_email,
@@ -69,9 +69,9 @@ def SignUP():
             print('This email already exist, try another one. ')
             continue
         else:
-            signup_name = input('Please enter your name. ')
-            signup_phone  = input('Please enter your phone. ')
-            signup_pass = input('Enter your password. ')
+            signup_name = raw_input('Please enter your name. ')
+            signup_phone  = raw_input('Please enter your phone. ')
+            signup_pass = raw_input('Enter your password. ')
 
             # cursor.execute("insert into members values(email=:e,name=:n,phone=:ph,pwd=pd",
             # {"e":signup_email,"n":signup_name,"p":sighup_phone, "pd":sighup_pass})
@@ -104,62 +104,60 @@ def Findlocations(inputkeyword):
 
 # SelectionLocation prompts user to select the location lcode he or his want
 def selectionLocation(content):
-       while True:
-            inputkeywords = input(content)
-            inputkeywordlist = inputkeywords.split(' ')
-            outputlists = []
-            for item in inputkeywordlist:
-                output = Findlocations(item)
-                outputlists.append(output)
-            outputlist = [item for sublist in outputlists for item in sublist]
-            if len(outputlist) != 0:
-                break
-            else:
-                print("We Can Not Find any Locations, Please enter another one")
-                continue
-       index = 0
+    while True:
+        inputkeywords = raw_input(content)
+        inputkeywordlist = inputkeywords.split(' ')
+        outputlists = []
+        for item in inputkeywordlist:
+            output = Findlocations(item)
+            outputlists.append(output)
+        outputlist = [item for sublist in outputlists for item in sublist]
+        if len(outputlist) != 0:
+            break
+        else:
+            print("We Can Not Find any Locations, Please enter another one")
+            continue
+    index = 0
+    for item in outputlist[:5]:
+        index += 1
+        print(str(index) + ": ")
+        print(str(item))
 
+    if index >= 5:
 
-       for item in outputlist[:5]:
-            index += 1
-            print(str(index) + ": ", end='')
-            print(item)
+        optionM = raw_input("Do You Want To See More Matches? Say No If you want to select now Y/N\n")
 
-       if index >= 5:
-
-            optionM = input("Do You Want To See More Matches? Say No If you want to select now Y/N\n")
-
-            if optionM.lower() == 'y':
-                for element in outputlist[5:]:
-                    index += 1
-                    print(str(index) + ": ", end='')
-                    print(element)
-                while True:
-                    try:
-                        postion = int(input("Enter The Code To Select The Location\n"))
-                        break
-                    except ValueError:
-                        print("Invalid Code")
-            elif optionM.lower() == 'n':
-                while True:
-                    try:
-                        postion = int(input("Enter The Code To Select The Location\n"))
-                        break
-                    except ValueError:
-                        print("Invalid Code")
-            else:
-                print("Invalid Option")
-       else:
+        if optionM.lower() == 'y':
+            for element in outputlist[5:]:
+                index += 1
+                print(str(index) + ": ")
+                print(element)
             while True:
                 try:
-                    postion = int(input("Enter The Code To Select The Location\n"))
+                    postion = int(raw_input("Enter The Code To Select The Location\n"))
                     break
                 except ValueError:
                     print("Invalid Code")
-       print("You have Chosen: ", end='')
-       insertTuple = outputlist[postion - 1]
-       print(outputlist[postion - 1])
-       return insertTuple
+        elif optionM.lower() == 'n':
+            while True:
+                try:
+                    postion = int(raw_input("Enter The Code To Select The Location\n"))
+                    break
+                except ValueError:
+                    print("Invalid Code")
+        else:
+            print("Invalid Option")
+    else:
+        while True:
+            try:
+                postion = int(raw_input("Enter The Code To Select The Location\n"))
+                break
+            except ValueError:
+                print("Invalid Code")
+    print("You have Chosen: ")
+    insertTuple = outputlist[postion - 1]
+    print(outputlist[postion - 1])
+    return insertTuple
 
 # extract data from sql database by given a query
 def getData(input_query):
@@ -192,7 +190,7 @@ def NextStepRide(i, group, key):
     if i + 1 < group:
         print("Enter 2 to see more " + key + " request. ")
     while True:
-        check = input("Enter here: ")
+        check = raw_input("Enter here: ")
         if check.upper() == "QUIT":
             print("----------------------------------")
             return 3
@@ -202,7 +200,7 @@ def NextStepRide(i, group, key):
             else:
                 print("invalid index! Try again! ")
         else:
-            print("invalid input!")
+            print("invalid raw_input!")
     print("----------------------------------")
     return int(check)
 
@@ -211,7 +209,7 @@ def GetThreeLocationKeywords():
     while not valid:
         #get a list
         print("Please enter at most 3 key words associated with ride.")
-        temp = input("Use space to sepereate the key words :")
+        temp = raw_input("Use space to sepereate the key words :")
         # check validation
         try:
             temp = temp.split(" ")
@@ -219,7 +217,7 @@ def GetThreeLocationKeywords():
                 raise Exception
             valid = True
         except Exception as e:
-            print("Empty input or too many input!"+ str(e.args))
+            print("Empty raw_input or too many raw_input!"+ str(e.args))
     return temp
 
 def FindRidelcode(inputkeyword):
@@ -252,7 +250,7 @@ def ListAllBookings(user_email):
 
 def CancelBooking(user_email):
     global conection, cursor
-    cancel_num = input('Please enter the booking number you want to cancle:')
+    cancel_num = raw_input('Please enter the booking number you want to cancle:')
     cancel_num = int(cancel_num)
     # first get the rno of current ride base on the bno you provide
     # and then delete it from table
@@ -303,7 +301,7 @@ def ListRides():
 
     print('List all rides the member offers with he number of available seats')
     print('Want to see more than 5 matching rides?(y/n)')
-    cond = input()
+    cond = raw_input()
     cond = cond.lower()
     if cond == 'n':
         cursor.execute('''select driver,r.rno, (r.seats-b.seats) as available
@@ -330,13 +328,13 @@ def ListRides():
 def BookMember(user_email):
     global conection, cursor
 
-    rno_select = int(input('Please enter the rno you want to select.'))
-    member_email = input('Please enter the member email you want to book.')
+    rno_select = int(raw_input('Please enter the rno you want to select.'))
+    member_email = raw_input('Please enter the member email you want to book.')
     member_email = member_email.lower()
-    num_seat = int(input('Please enter the number of seats booked.'))
-    cost_per_seat = int(input('Please enter cost per seat.'))
+    num_seat = int(raw_input('Please enter the number of seats booked.'))
+    cost_per_seat = int(raw_input('Please enter cost per seat.'))
     print('Please enter pickup and drop off location code.')
-    pickup, dropoff = input().split()
+    pickup, dropoff = raw_input().split()
     pickup = pickup.lower()
     dropoff = dropoff.lower()
 
@@ -359,7 +357,7 @@ def BookMember(user_email):
     row = cursor.fetchone()
     if num_seat > row[0]:
         print('Warning: the seats are overbooked. Do you want to comfirm?(y/n)')
-        key = input()
+        key = raw_input()
         key = key.lower()
 
         if key == 'y':
@@ -372,7 +370,7 @@ def BookMember(user_email):
             print('Overbooked, booking not complete.')
 
     # After a successful booking, a proper message should be sent to the other member that s/he is booked on the ride.
-    # first find the emil of member base on rno user input
+    # first find the emil of member base on rno user raw_input
     # fetchone return a list, list[0] to get the date
     cursor.execute("select date('now','localtime');")
     time = cursor.fetchone()
@@ -392,14 +390,14 @@ The member should be able to select a ride and book a member for that ride
 def GetDate(content):
     check = "N"
     while check.upper() != "Y":
-        from_user = input(content)
+        from_user = raw_input(content)
         try:
             date_object = datetime.strptime(from_user, "%Y-%m-%d")
             s = str(date_object)[:-8]
             print("Your ride will be on " + s)
-            check = input("Enter y to indicate it is correct: ")
+            check = raw_input("Enter y to indicate it is correct: ")
         except Exception as f:
-            print("invalid input" + str(f.args))
+            print("invalid raw_input" + str(f.args))
     return date_object
 
 
@@ -408,7 +406,7 @@ def GetLocation(content):
     global cursor, connect
     check = "N"
     while check.upper() != "Y":
-        from_user = input(content)
+        from_user = raw_input(content)
         try:
             cursor.execute("select * from locations where lcode = ?", (from_user,))
             location_infor = cursor.fetchone()
@@ -418,9 +416,9 @@ def GetLocation(content):
             for item in location_infor:
                 s += str(item) + " "
             print("The location code is as following\n" + s)
-            check = input("Enter y to indicate it is correct: ")
+            check = raw_input("Enter y to indicate it is correct: ")
         except Exception as f:
-            print("invalid input!" + str(f.args))
+            print("invalid raw_input!" + str(f.args))
     return location_infor[0]
 
 
@@ -428,13 +426,13 @@ def GetLocation(content):
 def GetFloat(content):
     check = "N"
     while check.upper() != "Y":
-        temp = input(content)
+        temp = raw_input(content)
         try:
             temp = round(float(temp), 2)
             print("Is the amount " + str(temp) + " correct? ")
-            check = input("Enter y to indicate it is: ")
+            check = raw_input("Enter y to indicate it is: ")
         except Exception as e:
-            print("invalid input! " + str(e.args))
+            print("invalid raw_input! " + str(e.args))
     return temp
 
 # check whether passed parameter is an int
@@ -448,19 +446,19 @@ def IsInt(sth):
 
 
 # this function is to get an exited rno from user
-# first get the input and check the invalidation
+# first get the raw_input and check the invalidation
 # used in q5 part 2
 def GetRno():
     global connection, cursor
     check = "N"
     while check.upper() != "Y":
-        temp = input("Please enter an ride number associate with the message: ")
+        temp = raw_input("Please enter an ride number associate with the message: ")
         try:
             temp = int(temp)
             cursor.execute("select rno from rides where rno = ?", (temp,))
             rno = cursor.fetchone()[0]
             print("Ride number is " + str(rno))
-            check = input("Enter y to indicate it is correct: ")
+            check = raw_input("Enter y to indicate it is correct: ")
         except Exception as e:
             print("invalid rno!" + str(e.args))
 
@@ -473,10 +471,10 @@ def GetText():
     check = "N"
     while check.upper() != "Y":
         print("Please enter the text message that you want to sent: ")
-        text = input("Enter here: ")
+        text = raw_input("Enter here: ")
         print("The text you want to send is as following: ")
         print(text)
-        check = input("Enter y to send the message: ")
+        check = raw_input("Enter y to send the message: ")
 
     return text
 
@@ -555,7 +553,7 @@ def SeeMyRequests(user_eamil):
 
         # if there is nothing, prompt user to quit
         if len(requests) == 0:
-            input("You do not have any requests. Press any key to go to previous menu.")
+            raw_input("You do not have any requests. Press any key to go to previous menu.")
             MainMenu(user_email)
 
             # otherwise print all the request that user has
@@ -566,7 +564,7 @@ def SeeMyRequests(user_eamil):
 
         # ask user if want to quit or delete current request
         while True:
-            check = input("Enter quit to go to previous menu or enter index to delete ride: ")
+            check = raw_input("Enter quit to go to previous menu or enter index to delete ride: ")
             if check.upper() == "QUIT":
                 MainMenu(user_email)
             elif IsInt(check) and int(check) not in range(0, len(requests)):
@@ -574,7 +572,7 @@ def SeeMyRequests(user_eamil):
             elif IsInt(check) and int(check) in range(0, len(requests)):
                 print("Are you sure to delete the following: ")
                 print(str(requests[int(check)])[1:-1])
-                double_check = input("Enter y to indicate yes: ")
+                double_check = raw_input("Enter y to indicate yes: ")
                 if double_check.upper() == "Y":
                     break
             else:
@@ -598,8 +596,8 @@ def SeeOtherRequests(user_email):
     global connection, cursor
 
     while True:
-        # get users input and find requests whose pick up location matched the input
-        key = input("Please enter a location code or a city name: ")
+        # get users raw_input and find requests whose pick up location matched the raw_input
+        key = raw_input("Please enter a location code or a city name: ")
         cursor.execute('''select r.rid, r.email, r.rdate, r.pickup,r.dropoff, r.amount
                   from requests r, locations l
                   where r.pickup = l.lcode and l.lcode like "%''' + key + '''%"
@@ -612,7 +610,7 @@ def SeeOtherRequests(user_email):
         # if nothing find, promp user to try again or quit to main manual
         if len(rows) == 0:
             print("Find nothing! ")
-            check = input("Enter quit to go to main manual or enter other words to check other keywords: ")
+            check = raw_input("Enter quit to go to main manual or enter other words to check other keywords: ")
             if check.upper() == "QUIT":
                 MainMenu(user_email)
 
@@ -624,7 +622,7 @@ def SeeOtherRequests(user_email):
                 for j in range(i * 5, min((i + 1) * 5, len(rows))):
                     print(str(j) + " : " + str(rows[j])[1:-1])
 
-                # get valid input to see if user want to go to man or see more requests or send message
+                # get valid raw_input to see if user want to go to man or see more requests or send message
                 check = NextStepRide(i, group, "request")
                 if check == 3:
                     MainMenu(user_email)
@@ -635,14 +633,14 @@ def SeeOtherRequests(user_email):
                     # get email from requests
                     index = 100000
                     while True:
-                        temp = input(
+                        temp = raw_input(
                             "enter the index before a request whose posting member that you want to mail: ")
                         if IsInt(temp):
                             index = int(temp)
                             if index in range(0, len(rows)):
                                 to = rows[index][1]
                                 print("You want to send message to " + str(to))
-                                double_check = input("Enter y to indecate it is correct: ")
+                                double_check = raw_input("Enter y to indecate it is correct: ")
                                 if double_check.upper() == "Y":
                                     break
                             else:
@@ -673,7 +671,8 @@ def SeeOtherRequests(user_email):
 def LoginOrSignUp():
     while True:
         try:
-            decision = str(input("Are you a new member?(y/n or type q to quit)\n")).lower()
+            decision = raw_input("Are you a new member?(y/n or type q to quit)\n")
+            decision.lower()
             if decision in ['n', 'y', 'q']:
                 break
             else:
@@ -721,14 +720,14 @@ def OfferRide(user_email):
     
     while True:
         try:
-            given_seats = int(input("Please enter seats\n"))
+            given_seats = int(raw_input("Please enter seats\n"))
             break
         except ValueError:
             print("Invalid Seats Format")
 
     while True:
         try:
-            given_lug_desc = str(input("Please enter luggage description\n"))
+            given_lug_desc = str(raw_input("Please enter luggage description\n"))
             break
         except ValueError:
             print("Invadlid Luggage Description")
@@ -747,16 +746,11 @@ def OfferRide(user_email):
             break
         except ValueError:
             print("Invalid Destination Location")
-
-    option = input("Do you want to add any set of enrouted locations?  Y/N\n")
-
-  
-
-    
+    option2 = raw_input("Do You Want to Add the Car Number Y/N")
     if option2.lower() == 'y':
         while True:
             try:
-                given_cno = int(input("Enter The Car Number(Optional):"))
+                given_cno = int(raw_input("Enter The Car Number(Optional):"))
                 break
             except ValueError:
                 print("Invalid Car Number")
@@ -769,7 +763,8 @@ def OfferRide(user_email):
     task = (given_rno, given_price, given_rdate, given_seats, given_lug_desc, srclcode, dstlcode, given_driver, given_cno)
     cursor.execute("INSERT INTO rides(rno,price,rdate,seats,lugDesc,src,dst,driver,cno) VALUES(?,?,?,?,?,?,?,?,?)",task)
     connection.commit()
-    option2 = input("Do You Want to Add the Car Number Y/N")
+    
+    option = raw_input("Do you want to add any set of enrouted locations?  Y/N\n")
     if option.lower() == 'y':
         text_enroute = "Please enter keywords for enroute locations:\n"
         enroutedlcode = selectionLocation(text_enroute)[0]
@@ -793,7 +788,7 @@ def BookMembersOrCancelBookings(user_email):
             print('3: list all the rides.')
             print('4: book a member on ride.')
             print('Or you can enter q to quit.')
-            option = input('Please enter your option code: ')
+            option = raw_input('Please enter your option code: ')
             option = option.lower()
 
             if option == '1':
@@ -845,7 +840,7 @@ def SearchRide(user_eamil):
     # if nothing find, prompt user to do it again
         if len(ride) == 0:
             print("Find nothing! ")
-            check = input("Enter quit to go to main manual or enter other words to check other keywords: ")
+            check = raw_input("Enter quit to go to main manual or enter other words to check other keywords: ")
             if check.upper() == "QUIT":
                 MainMenu(user_email)
 
@@ -864,7 +859,7 @@ def SearchRide(user_eamil):
                         print(e.args)
                         car_infor = []
 
-            # get valid input to see if user want to go to man or see more requests or send message
+            # get valid raw_input to see if user want to go to man or see more requests or send message
                 check = NextStepRide(i, group, "ride")
                 if check == 3:
                     MainMenu(user_email)
@@ -874,13 +869,13 @@ def SearchRide(user_eamil):
                     # get email from requests
                     index = 100000
                     while True:
-                        temp = input("enter the index before a ride whose posting member that you want to mail: ")
+                        temp = raw_input("enter the index before a ride whose posting member that you want to mail: ")
                         if IsInt(temp):
                             index = int(temp)
                             if index in range(0, len(ride)):
                                 to = ride[index][8]
                                 print("You want to send message to " + str(to))
-                                double_check = input("Enter y to indecate it is correct: ")
+                                double_check = raw_input("Enter y to indecate it is correct: ")
                                 if double_check.upper() == "Y":
                                     break
                             else:
@@ -912,7 +907,7 @@ def PostRideRequests(user_email):
     global connection, cursor
 
 
-    # get valid input from user
+    # get valid raw_input from user
     print("----------------------------------")
     date = GetDate("Please enter your date for travelling (YYYY-MM-DD) : ")
     print("----------------------------------")
@@ -935,7 +930,7 @@ def PostRideRequests(user_email):
 def SearchAndDeleteRideRequests(user_email):
     while True:
         try:
-            option = int(input("Enter 1 If You Want To See Your Ride Requests. \nOtherwise Enter 2 To See Others' Requests\n"))
+            option = int(raw_input("Enter 1 If You Want To See Your Ride Requests. \nOtherwise Enter 2 To See Others' Requests\n"))
             if option == 1:
                 SeeMyRequests(user_email)
                 break
@@ -946,13 +941,13 @@ def SearchAndDeleteRideRequests(user_email):
                 print("Invalid Code, Pleases Try Again")
                 continue
         except:
-            print("Invalid Input, Pleases Try Again")
+            print("Invalid raw_input, Pleases Try Again")
 
 
 def MainMenu(user_email):
     while True:
         try:
-            operation = str(input("Eneter Operation Code To Select:\n"
+            operation = str(raw_input("Eneter Operation Code To Select:\n"
                                   "1: Offer A Ride\n"
                                   "2: Search For Ride\n"
                                   "3: Book Members Or Cancel Bookings\n"
@@ -986,10 +981,10 @@ def MainMenu(user_email):
 
 def ExitProgram():
     while True:
-        option = int(input("Enter 1 if You Want To Exit Program\n Enter 2 if You Want To Logout "))
+        option = int(raw_input("Enter 1 if You Want To Exit Program\n Enter 2 if You Want To Logout "))
         if option in [1,2]:
             if option == 1:
-                sys.exit(0)
+                sys.exit(1)
             elif option == 2:
                 user_email = None
                 LoginOrSignUp()
